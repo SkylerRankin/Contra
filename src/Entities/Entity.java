@@ -13,6 +13,7 @@ public abstract class Entity {
 	protected int prevY;
 	protected double dx;
 	protected double dy;
+	protected boolean onGround = false;
 	protected boolean flipped = false;
 	private int width;
 	private int height;

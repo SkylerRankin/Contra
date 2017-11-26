@@ -13,19 +13,19 @@ public class Frame {
     int width;
     int height;
     
-    public Frame(int _width, int _height, int _fx, int _fy) {
+    public Frame(int _width, int _height) {
         width = _width;
         height = _height;
         absoluteFocus = new Point(_width/2, _height/2);
         prevAbsoluteFocus = new Point(_width/2, _height/2);
-        offset = width/2 - 10;
+        offset = width/2 - 75;
     }
     
     public void setFocus(int x, int y, int _dx) {
         if (_dx >= 0) {
             //player moved right, follow player
             if (x > absoluteFocus.x) {
-                if (x + offset <= 3240) { //do not shift if at the end of the level
+                if (x + offset <= 3328) { //do not shift if at the end of the level
                     prevAbsoluteFocus = absoluteFocus;
                     absoluteFocus = new Point(x-1, y); //the minus 1 removes that weird jitter
                 }

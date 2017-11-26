@@ -4,22 +4,26 @@ import Entities.Player;
 
 public class Model {
 
+	private Level level;
 	private Rectangle window;
-	private Player player;
 	private int[] keyData;
 	
 	public Model() {
-		
-		player = new Player(0, 0, 32, 42);
+		level = new Level();
 		window = new Rectangle(0, 0, 200, 200);
 	}
 	
 	public void applyPhysics() {
-		player.updatePosition(keyData, window);
+		level.player.updatePosition(keyData, window);
 	}
 	
 	public void processCollisions() {
-		
+		level.player.setOnGround(false);
+		if (level.boundaryCollision(level.player.getHitbox())) {
+			System.out.println("collision");
+			if (level.player.getDy() > 0)
+				level.player.setOnGround(true);
+		}
 	}
 	
 	public void setKeyData(int[] a) {
@@ -28,9 +32,9 @@ public class Model {
 	}
 	
 	public void updatePlayerAnimation() {
-		player.updateAnimations(this.keyData);
+		level.player.updateAnimations(keyData);
 	}
 	
-	public Player getPlayer() { return this.player; }
+	public Player getPlayer() { return level.player; }
 
 }

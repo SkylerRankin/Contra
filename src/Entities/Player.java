@@ -9,7 +9,7 @@ public class Player extends Entity {
 	
 	public Player(int x, int y, int w, int h) {
 		super(x, y, w, h);
-		this.animator = new Animator("files/player_anim.txt", "files/contra_player.png", 32, 42, 10);
+		this.animator = new Animator("files/player_anim.txt", "files/player.png", 32, 42, 10);
 		this.animator.setAnimation("idle");
 	}
 	
@@ -40,15 +40,21 @@ public class Player extends Entity {
 	
 	public void updatePosition(int[] data, Rectangle _w) {
 		
-		if (data[0] == 1) dx = -3;
-		if (data[2] == 1) dx = 3;
+		if (data[0] == 1) dx = -1;
+		if (data[2] == 1) dx = 1;
+		if (data[1] == 1 && onGround) dy = -3;
 		if (data[0]+data[2]==0) dx = 0;
 		
 		prevX = x;
 		prevY = y;
 		
+		if (!onGround) {
+			dy += 0.1;
+			y += dy;
+		}
+		
 		x += dx;
-		y += dy;
+		
 		
 	}
 	
@@ -59,5 +65,8 @@ public class Player extends Entity {
 	public int getX() { return this.x; }
 	public int getY() { return this.y; }
 	public boolean isFlipped() { return this.flipped; }
+	public boolean onGround() { return onGround; }
+	public void setOnGround(boolean b) { onGround = b; }
+	public double getDy() { return dy; }
 
 }
