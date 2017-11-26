@@ -1,0 +1,8 @@
+idle=0
+idle_shot=6
+idle_up=12
+idle_up_shot=18
+down=24
+down_shot=30
+jump=25,31,37,43
+run=36,42,1,7,13,19
