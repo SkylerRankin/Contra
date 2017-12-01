@@ -4,8 +4,6 @@ import javax.swing.Timer;
 
 import Utilities.InputManager;
 
-//import utilities.InputManager;
-
 public class Control {
     
     private Model model;
@@ -24,13 +22,19 @@ public class Control {
     
     public class TimerListener implements ActionListener {
         public void actionPerformed(ActionEvent ae) {
-        	
         	model.setKeyData(im.getKeyData());
-        	model.applyPhysics();
-        	model.processCollisions();
-        	view.setGameState(model.getPlayer());
-        	view.refresh();
-            
+        	if (model.mode == 0) {
+        		model.processMenu(im.getKeyData());
+        		view.setGameState(model.getPos());
+        		view.refresh(model.mode);
+        	} else if (model.mode == 1) {
+        		model.processItems(im.getKeyData());
+            	model.applyPhysics();
+            	model.processCollisions();
+            	view.setGameState(model.getPlayer(), model.getItems(), model.getEnemies());
+            	view.refresh(model.mode);
+        	}
+        	
         }
     }
     

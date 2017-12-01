@@ -1,0 +1,4 @@
+red_circle=0,3,6
+red_cloud=9,1,4
+orange_circle=7,10,2
+orange_cloud=5,8,11
