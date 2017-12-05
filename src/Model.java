@@ -13,13 +13,12 @@ import Entities.Turret;
 public class Model {
 
 	public int mode = 0;
-	private int pos = 0;
+	public int pos = 0;
 	private Level level;
 	private Rectangle window;
 	private int[] keyData;
 	
 	public Model() {
-		level = new Level(1);
 		window = new Rectangle(0, 0, 200, 200);
 	}
 	
@@ -42,7 +41,9 @@ public class Model {
 	}
 	
 	public void applyPhysics() {
-		level.player.updatePosition(keyData, window);
+		level.players[0].updatePosition(keyData, window);
+		if (pos == 1) level.players[1].updatePosition(keyData, window);
+
 		level.updateEnemyPositions();
 	}
 	
@@ -50,11 +51,20 @@ public class Model {
 		
 		//Player and ground collisions
 		
-		level.player.setOnGround(false);
-		if (level.boundaryCollision(level.player.getHitbox())) {
+		level.players[0].setOnGround(false);
+		if (pos == 1) level.players[1].setOnGround(false);
+		if (level.boundaryCollision(level.players[0].getHitbox())) {
 			//System.out.println("collision");
-			if (level.player.getDy() > 0)
-				level.player.setOnGround(true);
+			if (level.players[0].getDy() > 0)
+				level.players[0].setOnGround(true);
+		}
+		
+		if (pos == 1) {
+			if (level.boundaryCollision(level.players[1].getHitbox())) {
+				//System.out.println("collision");
+				if (level.players[1].getDy() > 0)
+					level.players[1].setOnGround(true);
+			}
 		}
 		
 		for (Entity e : level.getEnemies()) {
@@ -106,17 +116,20 @@ public class Model {
 	}
 	
 	public void updatePlayerAnimation() {
-		level.player.updateAnimations(keyData);
+		level.players[0].updateAnimations(keyData);
+		if (pos == 1) level.players[1].updateAnimations(keyData);
+
 	}
 	
 	public void updateTimedAnimations() {
+		if (mode == 0) return;
 		for (Item i : level.getItems()) {
 			if (i instanceof Explosion)
 				((Explosion) i).count();
 		}
 	}
 	
-	public Player getPlayer() { return level.player; }
+	public Player[] getPlayers() { return level.players; }
 	public Item[] getItems() { return level.getItems().toArray(new Item[level.getItems().size()]); }
 	public Enemy[] getEnemies() {  return level.getEnemies().toArray(new Enemy[level.getEnemies().size()]);  }
 	public int getPos() { return pos; }

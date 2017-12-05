@@ -14,8 +14,8 @@ public class Player extends Entity {
 	public Player(double x, double y, int w, int h, boolean player2) {
 		super(x, y, w, h);
 		this.player2 = player2;
-		if (player2) this.animator = new Animator("files/player_anim.txt", "files/red_player.png", 32, 42, 10);
-		else this.animator = new Animator("files/player_anim.txt", "files/blue_player.png", 32, 42, 10);
+		if (player2) this.animator = new Animator("files/player_anim.txt", "files/blue_player.png", 32, 42, 10);
+		else this.animator = new Animator("files/player_anim.txt", "files/red_player.png", 32, 42, 10);
 		this.animator.setAnimation("idle");
 	}
 	
@@ -31,40 +31,40 @@ public class Player extends Entity {
 			if (!animator.getAnimation().equals("jump")) {
 				animator.setAnimation("jump");
 			}
-		} else if (data[2] == 1) {
+		} else if ((player2 ? data[8] : data[2]) == 1) {
 			flipped = false;
 			if (!animator.getAnimation().equals("run"))
 				animator.setAnimation("run");
-		} else if (data[3] == 1) {
+		} else if ((player2 ? data[9] : data[3]) == 1) {
 			if (!animator.getAnimation().equals("down"))
 				animator.setAnimation("down");
-		} else if (data[1] == 1) {
+		} else if ((player2 ? data[7] : data[1]) == 1) {
 			if (!animator.getAnimation().equals("idle_up"))
 				animator.setAnimation("idle_up");
 		}
 		
 		//Angled aiming
 		
-		if (data[0]+data[1]==2) {
+		if ((player2 ? data[6] + data[7] : data[0]+data[1]) == 2) {
 			flipped = true;
 			if (!animator.getAnimation().equals("up_angle"))
 				animator.setAnimation("up_angle");
-		} else if (data[2]+data[1]==2) {
+		} else if ((player2 ? data[8] + data[7] : data[2]+data[1])==2) {
 			if (!animator.getAnimation().equals("up_angle"))
 				animator.setAnimation("up_angle");
-		} else if (data[0]+data[3]==2) {
+		} else if ((player2 ? data[6] + data[9] : data[0]+data[3])==2) {
 			flipped = true;
 			if (!animator.getAnimation().equals("down_angle"))
 				animator.setAnimation("down_angle");
-		} else if (data[2]+data[3]==2) {
+		} else if ((player2 ? data[8] + data[9] : data[2]+data[3])==2) {
 			if (!animator.getAnimation().equals("down_angle"))
 				animator.setAnimation("down_angle");
 		}
 		
-		if (data[0]+data[1]+data[2]+data[3] == 0)
+		if ((player2 ? data[6]+data[7]+data[8]+data[9] : data[0]+data[1]+data[2]+data[3]) == 0)
 			animator.setAnimation("idle");
 		
-		if (data[4]==1)
+		if ((player2 ? data[10] : data[4]) ==1)
 			animator.setAnimation("jump");
 		
 		if (!onGround && !animator.getAnimation().equals("jump"))
@@ -74,10 +74,10 @@ public class Player extends Entity {
 	
 	public void updatePosition(int[] data, Rectangle _w) {
 		
-		if (data[0] == 1) dx = -1;
-		if (data[2] == 1) dx = 1;
-		if (data[4] == 1 && onGround) dy = -3;
-		if (data[0]+data[2]==0) dx = 0;
+		if ((player2 ? data[6] : data[0]) == 1) dx = -1;
+		if ((player2 ? data[8] : data[2]) == 1) dx = 1;
+		if ((player2 ? data[10] : data[4]) == 1 && onGround) dy = -3;
+		if ((player2 ? data[6] + data[8] : data[0] + data[2])==0) dx = 0;
 		
 		prevX = x;
 		prevY = y;

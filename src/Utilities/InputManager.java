@@ -26,13 +26,13 @@ public class InputManager{
                 keys[4] = 1;
             } else if (key == KeyEvent.VK_SLASH) {
             	keys[5] = 1;
-            }  else if (key == KeyEvent.VK_A) {
+            } else if (key == KeyEvent.VK_A) {
                 keys[6] = 1;
             } else if (key == KeyEvent.VK_W) {
                 keys[7] = 1;
             } else if (key == KeyEvent.VK_D) {
                 keys[8] = 1;
-            }  else if (key == KeyEvent.VK_S) {
+            } else if (key == KeyEvent.VK_S) {
                 keys[9] = 1;
             } else if (key == KeyEvent.VK_1) {
             	keys[10] = 1;

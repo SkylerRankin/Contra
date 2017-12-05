@@ -26,13 +26,13 @@ public class Control {
         	if (model.mode == 0) {
         		model.processMenu(im.getKeyData());
         		view.setGameState(model.getPos());
-        		view.refresh(model.mode);
+        		view.refresh(model.mode, model.pos);
         	} else if (model.mode == 1) {
         		model.processItems(im.getKeyData());
             	model.applyPhysics();
             	model.processCollisions();
-            	view.setGameState(model.getPlayer(), model.getItems(), model.getEnemies());
-            	view.refresh(model.mode);
+            	view.setGameState(model.getPlayers(), model.getItems(), model.getEnemies());
+            	view.refresh(model.mode, model.pos);
         	}	
         }
     }

@@ -3,6 +3,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
+import Entities.Bullet;
 import Entities.Enemy;
 import Entities.Item;
 import Entities.Player;
@@ -11,38 +12,39 @@ import Utilities.SpriteSheetManager;
 
 public class GamePanel extends JPanel{
 	
-	private Player[] player;
+	private boolean twoplayer;
+	private Player[] players;
 	private Item[] items;
 	private Enemy[] enemies;
 	
 	private Frame frame;
 	private BufferedImage background;
 	
-	public GamePanel(double scale) {
+	public GamePanel(double scale, int two) {
 		setPreferredSize(new Dimension((int)(250*scale), (int)(240*scale)));
 		frame = new Frame(240, 250, scale);
-		player = new Player(0, 0, 32, 42, false);
 		background = new SpriteSheetManager().getSprites(3328, 240, "files/bg_plain.png")[0];
+		twoplayer = two == 0 ? false : true;
+		System.out.println("Two Player = " + twoplayer);
 	}
 	
-	public void updateState(Player p, Item[] i, Enemy[] e) {
-		player = p;
+	public void updateState(Player[] p, Item[] i, Enemy[] e) {
+		players = p;
 		items = i;
 		enemies = e;
 	}
 	
 	public void paintComponent(Graphics g) {
-		
-		//Utilities
 		super.paintComponent(g);
-		if (player == null || items == null || enemies == null) return;
-		frame.setFocus((int)player.getX(), (int)player.getY(), (int)player.getDx());
+		if (players == null || items == null || enemies == null) return;
+		frame.setFocus((int)players[0].getX(), (int)players[0].getY(), (int)players[0].getDx());
 		frame.initImage();
 		//Draw background
 		frame.drawImage(g, background, 0, 0);
 		
 		//Draw player
-		frame.drawImage(g, player.getImage(), (int)player.getX(), (int)player.getY(), player.isFlipped());
+		frame.drawImage(g, players[0].getImage(), (int)players[0].getX(), (int)players[0].getY(), players[0].isFlipped());
+		if (twoplayer) frame.drawImage(g, players[1].getImage(), (int)players[1].getX(), (int)players[1].getY(), players[1].isFlipped());
 		
 		//Draw items
 		for (Item i : items) {
@@ -56,7 +58,5 @@ public class GamePanel extends JPanel{
 		
 		frame.draw(g);
 			
-		
 	}
-	
 }

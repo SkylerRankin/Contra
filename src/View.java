@@ -16,13 +16,12 @@ public class View extends JFrame{
 		super("Contra");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setResizable(false);
-		gp = new GamePanel(3);
 		mp = new MenuPanel(3);
 		add(mp);
 		pack();
 	}
 	
-	public void setGameState(Player player, Item[] items, Enemy[] enemies) {
+	public void setGameState(Player[] player, Item[] items, Enemy[] enemies) {
 		gp.updateState(player, items, enemies);
 	}
 	
@@ -30,14 +29,14 @@ public class View extends JFrame{
 		mp.updateState(p);
 	}
 	
-	public void refresh(int mode) {
+	public void refresh(int mode, int a) {
 		if (mode == 1 && currPanel.equals("menu")) {
-			currPanel.equals("game");
+			currPanel = "game";
 			this.remove(mp);
+			gp = new GamePanel(3, a);
 			this.add(gp);
 			pack();
 		}
-		
 		if (mode == 0) mp.repaint();
 		else if (mode == 1) gp.repaint();
 	}
