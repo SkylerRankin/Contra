@@ -1,12 +1,14 @@
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
+import Entities.BackpackSoldier;
 import Entities.Bullet;
 import Entities.Enemy;
 import Entities.Entity;
 import Entities.Explosion;
 import Entities.Item;
 import Entities.Player;
+import Entities.Turret;
 
 public class Model {
 
@@ -17,7 +19,7 @@ public class Model {
 	private int[] keyData;
 	
 	public Model() {
-		level = new Level();
+		level = new Level(1);
 		window = new Rectangle(0, 0, 200, 200);
 	}
 	
@@ -25,7 +27,11 @@ public class Model {
 		if (pos == 0 && data[3] == 1 && data[1] == 0) pos = 1;
 		else if (pos == 1 && data[1] == 1 && data[3] == 0) pos = 0;
 		
-		if (data[4] == 1) mode = 1;
+		if (data[4] == 1) {
+			System.out.println("LEVELONE");
+			level = new Level(pos);
+			mode = 1;
+		}
 		
 	}
 	
@@ -62,10 +68,13 @@ public class Model {
 		ArrayList<Item> additions = new ArrayList<Item>();
 		
 		for (Item bullet : level.getItems()) {
-			if (bullet instanceof Bullet) {
+			if (bullet instanceof Bullet && bullet.isHostile()) {
 				for (Enemy enemy : level.getEnemies()) {
 					if (bullet.getHitbox().intersects(enemy.getHitbox())) {
-						additions.add(new Explosion(enemy.getX(), enemy.getDy(), "red_circle"));
+						if (enemy instanceof BackpackSoldier)
+							additions.add(new Explosion(enemy.getX(), enemy.getY(), "red_circle", 2));
+						if (enemy instanceof Turret)
+							additions.add(new Explosion(enemy.getX(), enemy.getY(), "red_cloud", 2));
 						enemy.setDead(true);
 						bullet.setRemoved(true);
 					}
@@ -93,10 +102,18 @@ public class Model {
 		this.keyData = a;
 		if (mode == 1)
 		updatePlayerAnimation();
+		updateTimedAnimations();
 	}
 	
 	public void updatePlayerAnimation() {
 		level.player.updateAnimations(keyData);
+	}
+	
+	public void updateTimedAnimations() {
+		for (Item i : level.getItems()) {
+			if (i instanceof Explosion)
+				((Explosion) i).count();
+		}
 	}
 	
 	public Player getPlayer() { return level.player; }

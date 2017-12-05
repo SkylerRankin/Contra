@@ -4,7 +4,6 @@ import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
 import Entities.Enemy;
-import Entities.Entity;
 import Entities.Item;
 import Entities.Player;
 import Utilities.Frame;
@@ -12,7 +11,7 @@ import Utilities.SpriteSheetManager;
 
 public class GamePanel extends JPanel{
 	
-	private Player player;
+	private Player[] player;
 	private Item[] items;
 	private Enemy[] enemies;
 	
@@ -22,7 +21,7 @@ public class GamePanel extends JPanel{
 	public GamePanel(double scale) {
 		setPreferredSize(new Dimension((int)(250*scale), (int)(240*scale)));
 		frame = new Frame(240, 250, scale);
-		player = new Player(0, 0, 32, 42);
+		player = new Player(0, 0, 32, 42, false);
 		background = new SpriteSheetManager().getSprites(3328, 240, "files/bg_plain.png")[0];
 	}
 	

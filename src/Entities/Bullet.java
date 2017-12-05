@@ -4,12 +4,13 @@ import Utilities.Animator;
 
 public class Bullet extends Item {
 	
-	private int dir; //0=0, 1=45, 2=90, 3=135, 4=180,...
+	private double angle;
 	private boolean fromPlayer;
 	
-	public Bullet(double x, double y, int d, boolean from) {
+	public Bullet(double x, double y, double angle, boolean from) {
+		
 		super(x, y, 2, 2);
-		dir = d;
+		this.angle = angle;
 		dx = 2;
 		dy = 2;
 		animator = new Animator("files/item_anim.txt", "files/bullet.png", 3, 3, 1);
@@ -20,6 +21,10 @@ public class Bullet extends Item {
 	public boolean fromPlayer() { return fromPlayer; }
 	
 	public void updatePosition() {
+		
+		x+=dx*Math.cos(angle);
+		y+=dy*Math.sin(angle);
+		/*
 		switch (dir) {
 			case 0:
 				x+=dx;
@@ -49,7 +54,7 @@ public class Bullet extends Item {
 				y+=dy;
 				x+=dx;
 				break;
-		}
+		}*/
 	}
 
 	

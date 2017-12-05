@@ -1,5 +1,7 @@
 package Entities;
 
+import java.awt.Point;
+
 public class Enemy extends Entity {
 
 	private boolean dead;
@@ -10,5 +12,8 @@ public class Enemy extends Entity {
 	
 	public boolean isDead() { return dead; }
 	public void setDead(boolean a) { dead = a; }
+	public Point getShotOffset() {
+		return new Point();
+	}
 	
 }

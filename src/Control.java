@@ -33,8 +33,7 @@ public class Control {
             	model.processCollisions();
             	view.setGameState(model.getPlayer(), model.getItems(), model.getEnemies());
             	view.refresh(model.mode);
-        	}
-        	
+        	}	
         }
     }
     

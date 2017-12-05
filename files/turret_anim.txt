@@ -1,0 +1,12 @@
+idle_0=12
+idle_1=11
+idle_2=10
+idle_3=5
+idle_4=0
+idle_5=1
+idle_6=2
+idle_7=3
+idle_8=4
+idle_9=8
+idle_10=14
+idle_11=13
