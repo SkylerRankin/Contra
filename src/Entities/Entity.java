@@ -16,8 +16,8 @@ public abstract class Entity {
 	protected double dy;
 	protected boolean onGround = false;
 	protected boolean flipped = false;
-	private int width;
-	private int height;
+	protected int width;
+	protected int height;
 	
 	public Entity(double x, double y, int w, int h) {
 		this.x = x;

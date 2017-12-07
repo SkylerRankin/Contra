@@ -8,8 +8,19 @@ import Utilities.Animator;
 
 public class Player extends Entity {
 	
+	private boolean[] hit_data = new boolean[]{false, false, false};
+	// 0=player is hit, 1=knockback, 2=
+	
+	private boolean hit = false;
+	private boolean knockback = false;
+	
+	private int health = 3;
 	private boolean player2;
 	private boolean shot = false;
+	private boolean falling;
+	private double jump_speed = 3;
+	private double speed = 1;
+	private double gravity = 0.1;
 	
 	public Player(double x, double y, int w, int h, boolean player2) {
 		super(x, y, w, h);
@@ -17,54 +28,61 @@ public class Player extends Entity {
 		if (player2) this.animator = new Animator("files/player_anim.txt", "files/blue_player.png", 32, 42, 10);
 		else this.animator = new Animator("files/player_anim.txt", "files/red_player.png", 32, 42, 10);
 		this.animator.setAnimation("idle");
-	}
+	}	
 	
 	 public void updateAnimations(int[] data) {
-		
+		 int i = player2 ? 6 : 0;
+		 
+		 if (hit_data[0]) {
+			 if  (!animator.getAnimation().equals("hit"))
+					 animator.setAnimation("hit");
+			 return;
+		 }
+		 
 		//Straight forward positions
 		
-		if ((player2 ? data[6] : data[0]) == 1) {
+		if (data[i] == 1) {
 			flipped = true;
 			if (!animator.getAnimation().equals("run"))
 				animator.setAnimation("run");
-		} else if ((player2 ? data[10] : data[4]) == 1) {
+		} else if (data[4+i] == 1) {
 			if (!animator.getAnimation().equals("jump")) {
 				animator.setAnimation("jump");
 			}
-		} else if ((player2 ? data[8] : data[2]) == 1) {
+		} else if (data[2+i] == 1) {
 			flipped = false;
 			if (!animator.getAnimation().equals("run"))
 				animator.setAnimation("run");
-		} else if ((player2 ? data[9] : data[3]) == 1) {
+		} else if (data[3+i] == 1) {
 			if (!animator.getAnimation().equals("down"))
 				animator.setAnimation("down");
-		} else if ((player2 ? data[7] : data[1]) == 1) {
+		} else if (data[1+i] == 1) {
 			if (!animator.getAnimation().equals("idle_up"))
 				animator.setAnimation("idle_up");
 		}
 		
 		//Angled aiming
 		
-		if ((player2 ? data[6] + data[7] : data[0]+data[1]) == 2) {
+		if (data[i]+data[1+i] == 2) {
 			flipped = true;
 			if (!animator.getAnimation().equals("up_angle"))
 				animator.setAnimation("up_angle");
-		} else if ((player2 ? data[8] + data[7] : data[2]+data[1])==2) {
+		} else if (data[2+i]+data[1+i]==2) {
 			if (!animator.getAnimation().equals("up_angle"))
 				animator.setAnimation("up_angle");
-		} else if ((player2 ? data[6] + data[9] : data[0]+data[3])==2) {
+		} else if (data[i]+data[3+i]==2) {
 			flipped = true;
 			if (!animator.getAnimation().equals("down_angle"))
 				animator.setAnimation("down_angle");
-		} else if ((player2 ? data[8] + data[9] : data[2]+data[3])==2) {
+		} else if (data[2+i]+data[3+i]==2) {
 			if (!animator.getAnimation().equals("down_angle"))
 				animator.setAnimation("down_angle");
 		}
 		
-		if ((player2 ? data[6]+data[7]+data[8]+data[9] : data[0]+data[1]+data[2]+data[3]) == 0)
+		if (data[i]+data[1+i]+data[2+i]+data[3+i] == 0)
 			animator.setAnimation("idle");
 		
-		if ((player2 ? data[10] : data[4]) ==1)
+		if (data[4+i] ==1)
 			animator.setAnimation("jump");
 		
 		if (!onGround && !animator.getAnimation().equals("jump"))
@@ -74,16 +92,28 @@ public class Player extends Entity {
 	
 	public void updatePosition(int[] data, Rectangle _w) {
 		
-		if ((player2 ? data[6] : data[0]) == 1) dx = -1;
-		if ((player2 ? data[8] : data[2]) == 1) dx = 1;
-		if ((player2 ? data[10] : data[4]) == 1 && onGround) dy = -3;
+		if (hit_data[0]) {
+			if (hit_data[2]) { dy = -jump_speed; hit_data[2] = false; }
+			if (hit_data[1]) dx = speed/2*(this.flipped ? 1 : -1);
+			prevX = x;
+			prevY = y;
+			if (!onGround) { dy += gravity; y += dy; }
+			if (onGround) { hit_data[0] = false; hit_data[1] = false; hit_data[2] = false;}
+			x += dx;
+			return;
+		}
+		
+		if ((player2 ? data[9] + data[10] : data[3] + data[4]) == 2) falling = true;
+		if ((player2 ? data[6] : data[0]) == 1) dx = -speed;
+		if ((player2 ? data[8] : data[2]) == 1) dx = speed;
+		if ((player2 ? data[10] : data[4]) == 1 && onGround && !falling) dy = -jump_speed;
 		if ((player2 ? data[6] + data[8] : data[0] + data[2])==0) dx = 0;
 		
 		prevX = x;
 		prevY = y;
 		
 		if (!onGround) {
-			dy += 0.1;
+			dy += gravity;
 			y += dy;
 		}
 		
@@ -91,6 +121,19 @@ public class Player extends Entity {
 		
 	}
 	
+	public boolean isHit() { return hit_data[0]; }
+	public void hit() { 
+		this.hit_data[0] = true;
+		this.hit_data[1] = true;
+		this.hit_data[2] = true;
+		this.health--;
+		System.out.println(this.health);
+		if (!animator.getAnimation().equals("hit"))
+			 animator.setAnimation("hit");
+	}
+	public Rectangle getGroundHitbox() { return new Rectangle((int)x, (int)y + this.height - 1, this.width, 1); }
+	public boolean isFalling() { return falling; }
+	public void setFalling(boolean f) { falling = f; }
 	public boolean hasShot() { return shot; }
 	public void setShot(boolean a) { shot = a; }
 	public boolean isFlipped() { return this.flipped; }
@@ -98,7 +141,6 @@ public class Player extends Entity {
 	public void setOnGround(boolean b) { onGround = b; }
 	public double getDy() { return dy; }
 	public double getDir() {
-		System.out.println(this.animator.getAnimation() + ", " + this.flipped);
 		switch(this.animator.getAnimation()) {
 		
 		case "down":

@@ -39,6 +39,11 @@ public class Level {
 		enemies = new ArrayList<Enemy>();
 		enemies.add(new BackpackSoldier(100, 20, 32, 32, 0.5));
 		enemies.add(new Turret(200, 180, 32, 32));
+		enemies.add(new Turret(250, 180, 32, 32));
+		enemies.add(new Turret(300, 180, 32, 32));
+		enemies.add(new Turret(310, 50, 32, 32));
+		enemies.add(new Turret(310, 100, 32, 32));
+		enemies.add(new Turret(440, 180, 32, 32));
 	}
 	
 	public boolean boundaryCollision(Rectangle r) {

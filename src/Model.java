@@ -53,15 +53,16 @@ public class Model {
 		
 		level.players[0].setOnGround(false);
 		if (pos == 1) level.players[1].setOnGround(false);
-		if (level.boundaryCollision(level.players[0].getHitbox())) {
-			//System.out.println("collision");
+		
+		if (level.players[0].isFalling() && !level.boundaryCollision(level.players[0].getGroundHitbox())) level.players[0].setFalling(false);
+		
+		if (level.boundaryCollision(level.players[0].getGroundHitbox()) && !level.players[0].isFalling()) {
 			if (level.players[0].getDy() > 0)
 				level.players[0].setOnGround(true);
 		}
 		
 		if (pos == 1) {
-			if (level.boundaryCollision(level.players[1].getHitbox())) {
-				//System.out.println("collision");
+			if (level.boundaryCollision(level.players[1].getGroundHitbox())  && !level.players[1].isFalling()) {
 				if (level.players[1].getDy() > 0)
 					level.players[1].setOnGround(true);
 			}
@@ -106,6 +107,18 @@ public class Model {
 			if (!i.isRemoved()) _items.add(i);
 		level.updateItems(_items);
 		
+		//Player and Bullet Collisions
+		
+		for (Item bullet : level.getItems()) {
+			if (bullet instanceof Bullet && !bullet.isHostile()) {
+				if (!level.players[0].isHit() && level.players[0].getHitbox().intersects(bullet.getHitbox())) {
+					level.players[0].hit();
+				}
+				if (pos == 1 && !level.players[1].isHit() &&  level.players[1].getHitbox().intersects(bullet.getHitbox())) {
+					level.players[1].hit();
+				}
+			}
+		}
 	}
 	
 	public void setKeyData(int[] a) {
