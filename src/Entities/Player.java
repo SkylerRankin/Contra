@@ -10,10 +10,7 @@ public class Player extends Entity {
 	
 	private boolean[] hit_data = new boolean[]{false, false, false};
 	// 0=player is hit, 1=knockback, 2=
-	
-	private boolean hit = false;
-	private boolean knockback = false;
-	
+	private boolean inWater = false;
 	private int health = 3;
 	private boolean player2;
 	private boolean shot = false;
@@ -36,6 +33,13 @@ public class Player extends Entity {
 		 if (hit_data[0]) {
 			 if  (!animator.getAnimation().equals("hit"))
 					 animator.setAnimation("hit");
+			 return;
+		 }
+		 
+		 if (inWater) {
+			 System.out.println("in water");
+			 if (!animator.getAnimation().equals("water_down"))
+				 animator.setAnimation("water_down");
 			 return;
 		 }
 		 
@@ -70,7 +74,7 @@ public class Player extends Entity {
 		} else if (data[2+i]+data[1+i]==2) {
 			if (!animator.getAnimation().equals("up_angle"))
 				animator.setAnimation("up_angle");
-		} else if (data[i]+data[3+i]==2) {
+		} else if (data[i]+data[3+i]==2) { 
 			flipped = true;
 			if (!animator.getAnimation().equals("down_angle"))
 				animator.setAnimation("down_angle");
@@ -87,7 +91,6 @@ public class Player extends Entity {
 		
 		if (!onGround && !animator.getAnimation().equals("jump"))
 			animator.setAnimation("jump");
-		
 	}
 	
 	public void updatePosition(int[] data, Rectangle _w) {
@@ -131,6 +134,7 @@ public class Player extends Entity {
 		if (!animator.getAnimation().equals("hit"))
 			 animator.setAnimation("hit");
 	}
+	
 	public Rectangle getGroundHitbox() { return new Rectangle((int)x, (int)y + this.height - 1, this.width, 1); }
 	public boolean isFalling() { return falling; }
 	public void setFalling(boolean f) { falling = f; }
@@ -139,6 +143,8 @@ public class Player extends Entity {
 	public boolean isFlipped() { return this.flipped; }
 	public boolean onGround() { return onGround; }
 	public void setOnGround(boolean b) { onGround = b; }
+	public boolean inWater() { return inWater; }
+	public void setInWater(boolean a) { inWater = a; }
 	public double getDy() { return dy; }
 	public double getDir() {
 		switch(this.animator.getAnimation()) {

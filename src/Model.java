@@ -52,17 +52,18 @@ public class Model {
 		//Player and ground collisions
 		
 		level.players[0].setOnGround(false);
+		level.players[0].setInWater(false);
 		if (pos == 1) level.players[1].setOnGround(false);
 		
-		if (level.players[0].isFalling() && !level.boundaryCollision(level.players[0].getGroundHitbox())) level.players[0].setFalling(false);
+		if (level.players[0].isFalling() && !level.boundaryCollision(level.players[0].getGroundHitbox(), 0)) level.players[0].setFalling(false);
 		
-		if (level.boundaryCollision(level.players[0].getGroundHitbox()) && !level.players[0].isFalling()) {
+		if (level.boundaryCollision(level.players[0].getGroundHitbox(), 0) && !level.players[0].isFalling()) {
 			if (level.players[0].getDy() > 0)
 				level.players[0].setOnGround(true);
 		}
 		
 		if (pos == 1) {
-			if (level.boundaryCollision(level.players[1].getGroundHitbox())  && !level.players[1].isFalling()) {
+			if (level.boundaryCollision(level.players[1].getGroundHitbox(), 0)  && !level.players[1].isFalling()) {
 				if (level.players[1].getDy() > 0)
 					level.players[1].setOnGround(true);
 			}
@@ -70,8 +71,15 @@ public class Model {
 		
 		for (Entity e : level.getEnemies()) {
 			e.setOnGround(false);
-			if (level.boundaryCollision(e.getHitbox()))
+			if (level.boundaryCollision(e.getHitbox(), 0))
 					e.setOnGround(true);
+		}
+		if (level.players[0].onGround()) System.out.println("on ground");
+		//Player and water collisions
+		
+		if (level.boundaryCollision(level.players[0].getGroundHitbox(), 2) && !level.players[0].isFalling()) {
+			if (level.players[0].getDy() > 0)
+				level.players[0].setInWater(true);
 		}
 		
 		//Enemy and bullet collisions
