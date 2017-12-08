@@ -14,10 +14,11 @@ public class Player extends Entity {
 	private int health = 3;
 	private boolean player2;
 	private boolean shot = false;
+	private boolean fallable = true;
 	private boolean falling;
 	private double jump_speed = 3;
 	private double speed = 1;
-	private double gravity = 0.1;
+	private double gravity = 0.08;
 	
 	public Player(double x, double y, int w, int h, boolean player2) {
 		super(x, y, w, h);
@@ -37,7 +38,6 @@ public class Player extends Entity {
 		 }
 		 
 		 if (inWater) {
-			 System.out.println("in water");
 			 if (!animator.getAnimation().equals("water_down"))
 				 animator.setAnimation("water_down");
 			 return;
@@ -115,7 +115,7 @@ public class Player extends Entity {
 		prevX = x;
 		prevY = y;
 		
-		if (!onGround) {
+		if (!onGround && !inWater && fallable) {
 			dy += gravity;
 			y += dy;
 		}
@@ -145,6 +145,8 @@ public class Player extends Entity {
 	public void setOnGround(boolean b) { onGround = b; }
 	public boolean inWater() { return inWater; }
 	public void setInWater(boolean a) { inWater = a; }
+	public void setFallable(boolean f) { fallable = f; }
+	public boolean isFallable() { return fallable; }
 	public double getDy() { return dy; }
 	public double getDir() {
 		switch(this.animator.getAnimation()) {

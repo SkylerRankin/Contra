@@ -23,7 +23,7 @@ public class Level {
 	private ArrayList<Enemy> enemies;
 	
 	public Level(int pos) {
-		boundary = new Boundary("files/boundary.png");
+		boundary = new Boundary("files/boundary.jpg");
 		background = new SpriteSheetManager().getSprites(3328, 240, "files/bg_plain.png")[0];
 		if (pos == 0) {
 			twoplayer = false;
@@ -48,6 +48,9 @@ public class Level {
 	
 	public boolean boundaryCollision(Rectangle r, int i) {
 		return boundary.collision(r, i);
+	}
+	public boolean boundaryCollision(Rectangle r, int i, int j) {
+		return boundary.collision(r, i, j);
 	}
 	
 	public void processItems(int[] data) {
