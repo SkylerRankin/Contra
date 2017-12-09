@@ -28,11 +28,23 @@ public class Control {
         		view.setGameState(model.getPos());
         		view.refresh(model.mode, model.pos);
         	} else if (model.mode == 1) {
-        		model.processItems(im.getKeyData());
-            	model.applyPhysics();
-            	model.processCollisions();
-            	view.setGameState(model.getPlayers(), model.getItems(), model.getEnemies());
-            	view.refresh(model.mode, model.pos);
+        		if (model.checkDeath()) {
+        			model.applyPhysics();
+                	model.processCollisions();
+                	view.setGameState(model.getPlayers(), model.getItems(), model.getEnemies());
+                	view.refresh(model.mode, model.pos);
+                	if (model.game_over) {
+                		model.mode = 0;
+                		model.restart();
+                		System.out.println("game over");
+                	}
+        		} else {
+            		model.processItems(im.getKeyData());
+                	model.applyPhysics();
+                	model.processCollisions();
+                	view.setGameState(model.getPlayers(), model.getItems(), model.getEnemies());
+                	view.refresh(model.mode, model.pos);
+        		}
         	}	
         }
     }

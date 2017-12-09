@@ -37,14 +37,20 @@ public class GamePanel extends JPanel{
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		if (players == null || items == null || enemies == null) return;
-		frame.setFocus((int)players[0].getX(), (int)players[0].getY(), (int)players[0].getDx());
+		if (!twoplayer) frame.setFocus((int)players[0].getX(), (int)players[0].getY(), (int)players[0].getDx());
+		else {
+			if (players[0].getX() > players[1].getX())
+				frame.setFocus((int)players[0].getX(), (int)players[0].getY(), (int)players[0].getDx());
+			else
+				frame.setFocus((int)players[1].getX(), (int)players[1].getY(), (int)players[1].getDx());
+		}
 		frame.initImage();
 		//Draw background
 		frame.drawImage(g, background, 0, 0);
 		
 		//Draw player
-		frame.drawImage(g, players[0].getImage(), (int)players[0].getX(), (int)players[0].getY(), players[0].isFlipped());
-		if (twoplayer) frame.drawImage(g, players[1].getImage(), (int)players[1].getX(), (int)players[1].getY(), players[1].isFlipped());
+		if (!players[0].dead) frame.drawImage(g, players[0].getImage(), (int)players[0].getX(), (int)players[0].getY(), players[0].isFlipped());
+		if (twoplayer && !players[1].dead) frame.drawImage(g, players[1].getImage(), (int)players[1].getX(), (int)players[1].getY(), players[1].isFlipped());
 		
 		//Draw items
 		for (Item i : items) {
@@ -55,6 +61,13 @@ public class GamePanel extends JPanel{
 		for (Enemy e : enemies) {
 			frame.drawImage(g, e.getImage(), (int)e.getX(), (int)e.getY(), e.isFlipped());
 		}
+		
+		//Draw health
+		for (int i = 0; i<players[0].getHealth()-1; i++)
+			frame.drawImageStatic(g, players[0].getHealthImage(), 10*i, 0);
+		if (twoplayer)
+			for (int i = 0; i<players[1].getHealth()-1; i++)
+				frame.drawImageStatic(g, players[1].getHealthImage(), 200 + 10*i, 0);
 		
 		frame.draw(g);
 			
