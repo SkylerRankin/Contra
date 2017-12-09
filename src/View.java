@@ -36,7 +36,15 @@ public class View extends JFrame{
 			gp = new GamePanel(3, a);
 			this.add(gp);
 			pack();
+		} else if (mode == 0 && currPanel.equals("game")) {
+			currPanel = "menu";
+			this.remove(gp);
+			mp = new MenuPanel(3);
+			this.add(mp);
+			pack();
 		}
+		
+		
 		if (mode == 0) mp.repaint();
 		else if (mode == 1) gp.repaint();
 	}
