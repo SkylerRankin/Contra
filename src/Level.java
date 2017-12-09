@@ -54,19 +54,19 @@ public class Level {
 	}
 	
 	public void processItems(int[] data) {
-		if (data[5] == 1 && !players[0].hasShot()) {
+		if (players[0].getHealth() > 0 && data[5] == 1 && !players[0].hasShot()) {
 			players[0].setShot(true);
 			items.add(new Bullet(players[0].getX() - players[0].getShotOffset().x, players[0].getY() - players[0].getShotOffset().y, players[0].getDir(), true));
 		}
 		
-		if (twoplayer && data[11] == 1 && !players[1].hasShot()) {
+		if (twoplayer && players[1].getHealth() > 0 && data[11] == 1 && !players[1].hasShot()) {
 			System.out.println("shot");
 			players[1].setShot(true);
 			items.add(new Bullet(players[1].getX() - players[1].getShotOffset().x, players[1].getY() - players[1].getShotOffset().y, players[1].getDir(), true));
 		}
 		
-		if (data[5] == 0) players[0].setShot(false);
-		if (twoplayer && data[11] == 0) players[1].setShot(false);
+		if (players[0].getHealth() > 0 && data[5] == 0) players[0].setShot(false);
+		if (twoplayer && players[1].getHealth() > 0 && data[11] == 0) players[1].setShot(false);
 		
 		for (Enemy e : enemies)
 			if (e instanceof Turret) {
@@ -91,7 +91,8 @@ public class Level {
 			if (_e instanceof BackpackSoldier)
 				((BackpackSoldier) _e).updatePosition();
 			if (_e instanceof Turret) {
-				((Turret) _e).setTarget(new Point((int)players[0].getX(), (int)players[0].getY()));
+				if (!twoplayer) ((Turret) _e).setTarget(new Point((int)players[0].getX(), (int)players[0].getY()));
+				else ((Turret) _e).setTarget(new Point((int)players[0].getX(), (int)players[0].getY()), new Point((int)players[1].getX(), (int)players[1].getY()));
 			}
 		}
 	}

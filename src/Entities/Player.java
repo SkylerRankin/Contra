@@ -19,6 +19,9 @@ public class Player extends Entity {
 	private double jump_speed = 3;
 	private double speed = 1;
 	private double gravity = 0.08;
+	private int death_count = 0;
+	private int hit_count = 0;
+	public boolean dead = false;
 	
 	public Player(double x, double y, int w, int h, boolean player2) {
 		super(x, y, w, h);
@@ -32,8 +35,13 @@ public class Player extends Entity {
 		 int i = player2 ? 6 : 0;
 		 
 		 if (hit_data[0]) {
-			 if  (!animator.getAnimation().equals("hit"))
+			 if (!hit_data[1]) {
+				 if  (!animator.getAnimation().equals("dead"))
+					 animator.setAnimation("dead");
+			 } else {
+				 if  (!animator.getAnimation().equals("hit"))
 					 animator.setAnimation("hit");
+			 }
 			 return;
 		 }
 		 
@@ -97,12 +105,16 @@ public class Player extends Entity {
 		
 		if (hit_data[0]) {
 			if (hit_data[2]) { dy = -jump_speed; hit_data[2] = false; }
-			if (hit_data[1]) dx = speed/2*(this.flipped ? 1 : -1);
+			hit_data[1] = !onGround;
+			if (hit_data[1]) dx = speed/2*(this.flipped ? 1 : -1); 
 			prevX = x;
 			prevY = y;
 			if (!onGround) { dy += gravity; y += dy; }
-			if (onGround) { hit_data[0] = false; hit_data[1] = false; hit_data[2] = false;}
-			x += dx;
+			if (hit_count < 170) { hit_count++; }
+			else { hit_count = 0; hit_data[0] = false; hit_data[1] = false; hit_data[2] = false; y = 10; 
+				if (health <= 0) dead = true;
+			}
+			if (hit_data[1]) x += dx;
 			return;
 		}
 		
@@ -125,7 +137,7 @@ public class Player extends Entity {
 	}
 	
 	public boolean isHit() { return hit_data[0]; }
-	public void hit() { 
+	public void hit() {
 		this.hit_data[0] = true;
 		this.hit_data[1] = true;
 		this.hit_data[2] = true;
@@ -135,6 +147,18 @@ public class Player extends Entity {
 			 animator.setAnimation("hit");
 	}
 	
+	public BufferedImage getHealthImage() { 
+		String s = animator.getAnimation(); 
+		animator.setAnimation("health");
+		BufferedImage bf = animator.currentAnimation.getFrame();
+		animator.setAnimation(s);
+		return bf;
+	}
+	
+	public String getAnimationName() { return this.animator.getAnimation(); }
+	public void incrementDeath() { death_count++; }
+	public int deathCount() { return death_count; }
+	public int getHealth() { return health; }
 	public Rectangle getGroundHitbox() { return new Rectangle((int)x, (int)y + this.height - 1, this.width, 1); }
 	public boolean isFalling() { return falling; }
 	public void setFalling(boolean f) { falling = f; }

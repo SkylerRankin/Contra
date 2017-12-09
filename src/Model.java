@@ -12,11 +12,13 @@ import Entities.Turret;
 
 public class Model {
 
+	public boolean game_over = false;
 	public int mode = 0;
 	public int pos = 0;
 	private Level level;
 	private Rectangle window;
 	private int[] keyData;
+	
 	
 	public Model() {
 		window = new Rectangle(0, 0, 200, 200);
@@ -57,6 +59,7 @@ public class Model {
 		if (pos == 1) level.players[1].setOnGround(false);
 		
 		if (level.players[0].isFalling() && !level.boundaryCollision(level.players[0].getGroundHitbox(), 0)) level.players[0].setFalling(false);
+		if (pos == 1 && level.players[1].isFalling() && !level.boundaryCollision(level.players[1].getGroundHitbox(), 0)) level.players[1].setFalling(false);
 		
 		if (level.boundaryCollision(level.players[0].getGroundHitbox(), 0, 3) && !level.players[0].isFalling()) {
 			if (level.players[0].getDy() > 0)
@@ -116,24 +119,26 @@ public class Model {
 			if (!e.isDead()) _enemies.add(e);
 		level.updateEnemies(_enemies);
 		
-		//Remove items
-		ArrayList<Item> _items = new ArrayList<Item>();
-		for (Item i : level.getItems())
-			if (!i.isRemoved()) _items.add(i);
-		level.updateItems(_items);
-		
 		//Player and Bullet Collisions
 		
 		for (Item bullet : level.getItems()) {
 			if (bullet instanceof Bullet && !bullet.isHostile()) {
 				if (!level.players[0].isHit() && level.players[0].getHitbox().intersects(bullet.getHitbox())) {
+					bullet.setRemoved(true);
 					level.players[0].hit();
 				}
 				if (pos == 1 && !level.players[1].isHit() &&  level.players[1].getHitbox().intersects(bullet.getHitbox())) {
+					bullet.setRemoved(true);
 					level.players[1].hit();
 				}
 			}
 		}
+		
+		//Remove items
+				ArrayList<Item> _items = new ArrayList<Item>();
+				for (Item i : level.getItems())
+					if (!i.isRemoved()) _items.add(i);
+				level.updateItems(_items);
 	}
 	
 	public void setKeyData(int[] a) {
@@ -155,6 +160,29 @@ public class Model {
 			if (i instanceof Explosion)
 				((Explosion) i).count();
 		}
+	}
+	
+	public boolean checkDeath() {
+		if (pos == 0 && level.players[0].getHealth() <= 0 && level.players[0].onGround()) {
+			level.players[0].incrementDeath();
+			if (level.players[0].deathCount() > 8)
+				game_over = true;
+			return true;
+		}
+			
+		if (pos == 1 && level.players[0].getHealth() <= 0 && level.players[1].getHealth() <= 0) {
+			level.players[1].incrementDeath();
+			level.players[0].incrementDeath();
+			if (level.players[1].deathCount() > 8 && level.players[0].deathCount() > 8) game_over = true;
+			return true;
+		}
+			
+		return false;
+	}
+	
+	public void restart() {
+		level = new Level(pos);
+		game_over = false;
 	}
 	
 	public Player[] getPlayers() { return level.players; }
