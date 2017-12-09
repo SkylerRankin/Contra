@@ -23,6 +23,13 @@ public class Turret extends Enemy {
 		active = false;
 	}
 	
+	public void setTarget(Point p1, Point p2) {
+		double d1 = Math.sqrt(Math.pow(this.x - p1.x, 2) + Math.pow(this.y - p1.y, 2));
+		double d2 = Math.sqrt(Math.pow(this.x - p2.x, 2) + Math.pow(this.y - p2.y, 2));
+		if (d1 < d2) setTarget(p1);
+		else setTarget(p2);
+	}
+	
 	public void setTarget(Point p) {
 		int _x = p.x - (int) this.x;
 		int _y = p.y - (int) this.y;
