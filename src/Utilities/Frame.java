@@ -15,7 +15,7 @@ public class Frame {
     int width;
     int height;
     private double scale;
-    private BufferedImage image;  
+    private BufferedImage image;
     
     public Frame(int _width, int _height, double scale) {
     	this.scale = scale;
@@ -64,6 +64,12 @@ public class Frame {
     	//g.drawImage(bf, _x - absoluteFocus.x + offset, _y, null);
     	 
     	 */
+    }
+    
+    public void drawImageStatic(Graphics g, BufferedImage bf, int _x, int _y) {
+    	Graphics2D g2d = image.createGraphics();
+    	g2d.scale(scale, scale);
+    	g2d.drawImage(bf, _x, _y, bf.getWidth(), bf.getHeight(), null);
     }
     
     public void drawImage(Graphics g, BufferedImage bf, int _x, int _y, boolean flip) {
